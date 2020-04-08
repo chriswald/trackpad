@@ -66,9 +66,13 @@ class Trackpad {
 	}
 
 	private MoveCursor(touch: Touch): void {
+		const moveScale: number = 1.5;
+
 		let prevTouch = this._prevTouches[0];
 		let diffX: number = touch.clientX - prevTouch.clientX;
 		let diffY: number = touch.clientY - prevTouch.clientY;
+		diffX = diffX * moveScale;
+		diffY = diffY * moveScale;
 
 		let myHeaders: Headers = new Headers();
 		myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
@@ -89,10 +93,13 @@ class Trackpad {
 	}
 
 	private Scroll(touches: TouchList): void {
+		const scrollScale: number = 2;
+
 		let prevLoc: Point = this.GetMultiTouchAverageLoc(this._prevTouches);
 		let nowLoc: Point = this.GetMultiTouchAverageLoc(touches);
 
 		let diffY: number = nowLoc.y - prevLoc.y;
+		diffY = diffY * scrollScale;
 
 		let myHeaders: Headers = new Headers();
 		myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
