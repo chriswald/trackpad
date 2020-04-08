@@ -17,10 +17,21 @@ namespace Trackpad.Controllers
 		[Required]
 		public int DeltaY { get; set; }
 	}
+
 	public class TrackpadClickRequest
 	{
 		[Required]
 		public string AuthToken { get; set; }
+	}
+
+	public class TrackpadScrollRequest
+	{
+		[Required]
+		public string AuthToken { get; set; }
+
+		[Required]
+		public int DeltaY { get; set; }
+
 	}
 
 	[RoutePrefix("api/Trackpad")]
@@ -53,6 +64,18 @@ namespace Trackpad.Controllers
 			}
 
 			MouseEvent(MouseEventFlags.LeftDown | MouseEventFlags.LeftUp);
+		}
+
+		[HttpPost]
+		[Route("Scroll")]
+		public void Scroll(TrackpadScrollRequest scrollRequest)
+		{
+			if (!AuthenticationController.ValidateAuthToken(scrollRequest.AuthToken))
+			{
+				return;
+			}
+
+			MouseEvent(MouseEventFlags.Wheel, -scrollRequest.DeltaY);
 		}
 
 
@@ -103,7 +126,8 @@ namespace Trackpad.Controllers
 			Move = 0x00000001,
 			Absolute = 0x00008000,
 			RightDown = 0x00000008,
-			RightUp = 0x00000010
+			RightUp = 0x00000010,
+			Wheel = 0x00000800
 		}
 
 		[DllImport("user32.dll")]
@@ -111,13 +135,18 @@ namespace Trackpad.Controllers
 
 		public static void MouseEvent(MouseEventFlags value)
 		{
+			MouseEvent(value, 0);
+		}
+
+		public static void MouseEvent(MouseEventFlags value, int dwData)
+		{
 			Point position = GetCursorPosition();
 
 			mouse_event
 				((int)value,
 				 position.X,
 				 position.Y,
-				 0,
+				 dwData,
 				 0);
 		}
 	}
