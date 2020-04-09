@@ -48,7 +48,9 @@
 			this.ClientSize = new System.Drawing.Size(800, 450);
 			this.Controls.Add(this.lblCode);
 			this.Name = "CodeForm";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Form1";
+			this.TopMost = true;
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
